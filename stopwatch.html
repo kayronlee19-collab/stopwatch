@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meanwhile 스탑워치</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3ede4;
+    --paper-2: #e9dfd1;
+    --glass: rgba(246, 241, 233, 0.72);
+    --ink: #1f1b17;
+    --ink-soft: #5c544c;
+    --muted: #9a9086;
+    --rule: #d6ccbe;
+    --accent: #8c3b45;
+    --gold: #a88655;
+    --btn-text: #f3ede4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15120e;
+      --paper-2: #221d16;
+      --glass: rgba(26, 22, 17, 0.7);
+      --ink: #efe7da;
+      --ink-soft: #c2b8aa;
+      --muted: #8a8075;
+      --rule: #3a342c;
+      --accent: #d08b92;
+      --gold: #c9a978;
+      --btn-text: #15120e;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 35%, var(--paper-2), var(--paper) 70%) fixed;
+    color: var(--ink);
+    font-family: "Noto Serif KR", "Batang", serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  #globe {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px 56px;
+  }
+
+  /* ── Masthead ── */
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 10px;
+  }
+  .brand {
+    text-align: center;
+    margin: 28px 0 6px;
+    font-family: "Bodoni Moda", serif;
+    font-weight: 400;
+    font-size: clamp(32px, 9.5vw, 68px);
+    letter-spacing: 0.14em;
+    padding-left: 0.14em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .tagline {
+    text-align: center;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-soft);
+  }
+
+  /* ── Time ── */
+  .time-block {
+    margin: 40px 0 0;
+    padding: 34px 0 28px;
+    text-align: center;
+  }
+  .label {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+  }
+  .time {
+    margin: 14px 0 0;
+    font-family: "Bodoni Moda", serif;
+    font-size: clamp(64px, 21vw, 120px);
+    line-height: 1;
+    font-variant-numeric: lining-nums tabular-nums;
+    text-shadow: 0 0 30px var(--paper), 0 0 12px var(--paper);
+  }
+  .time .cs {
+    font-style: italic;
+    font-size: 0.38em;
+    color: var(--accent);
+    margin-left: 4px;
+    vertical-align: 0.9em;
+  }
+  .quip {
+    display: inline-block;
+    min-height: 1.6em;
+    margin: 20px auto 0;
+    max-width: 440px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: var(--glass);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    transition: opacity .5s ease;
+  }
+
+  /* ── Controls ── */
+  .controls { display: flex; gap: 12px; margin: 8px 0 0; }
+  button {
+    flex: 1;
+    height: 52px;
+    border-radius: 999px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 13px;
+    letter-spacing: 5px;
+    cursor: pointer;
+    transition: background .25s, color .25s, transform .05s, opacity .25s;
+  }
+  button:active { transform: scale(0.98); }
+  button:disabled { opacity: .35; cursor: default; }
+  #secondary {
+    background: var(--glass);
+    backdrop-filter: blur(6px);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  #secondary:not(:disabled):hover { background: var(--ink); color: var(--btn-text); }
+  #toggle { background: var(--ink); color: var(--btn-text); border: 1px solid var(--ink); }
+  #toggle.running { background: var(--accent); border-color: var(--accent); }
+  .keys {
+    text-align: center;
+    margin: 14px 0 0;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+  .keys kbd {
+    font-family: inherit;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin: 0 2px;
+    background: var(--glass);
+  }
+
+  /* ── Section head ── */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 52px 0 16px;
+  }
+  .section-head .no {
+    font-family: "Bodoni Moda", serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--gold);
+  }
+  .section-head h2 { margin: 0; font-weight: 400; font-size: 19px; }
+  .section-head .line { flex: 1; height: 1px; background: var(--rule); }
+
+  /* ── Stats (간결한 숫자 카드) ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .stat {
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    padding: 18px 8px 16px;
+    text-align: center;
+  }
+  .stat svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .stat .v {
+    margin-top: 8px;
+    font-family: "Bodoni Moda", serif;
+    font-size: clamp(24px, 6.4vw, 32px);
+    line-height: 1.1;
+    font-variant-numeric: lining-nums tabular-nums;
+    white-space: nowrap;
+  }
+  .stat .u {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-left: 2px;
+  }
+  .stat .k {
+    margin-top: 6px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .stat.alert { border-color: color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  .stat.alert svg { stroke: var(--accent); }
+  .stat.alert .v { color: var(--accent); }
+  .stats-note {
+    margin: 12px 0 0;
+    text-align: center;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── Editorial ── */
+  .editorial {
+    margin: 40px auto 0;
+    padding: 22px 20px;
+    max-width: 520px;
+    text-align: center;
+    border-radius: 18px;
+    background: var(--glass);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-weight: 300;
+    font-size: clamp(16px, 4.4vw, 20px);
+    line-height: 1.7;
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .editorial.fade { opacity: 0; transform: translateY(6px); }
+  .editorial .sig {
+    display: block;
+    margin-top: 8px;
+    font-family: "Bodoni Moda", serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--gold);
+  }
+
+  /* ── Laps ── */
+  .laps {
+    list-style: none;
+    margin: 0;
+    padding: 0 16px;
+    border-radius: 18px;
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--rule);
+  }
+  .laps li {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 4px 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--rule);
+    animation: rise .5s ease;
+  }
+  .laps li:last-child { border-bottom: none; }
+  .laps .idx {
+    grid-row: span 2;
+    font-family: "Bodoni Moda", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .laps .caption { font-size: 14px; }
+  .laps .lt {
+    font-family: "Bodoni Moda", serif;
+    font-size: 20px;
+    font-variant-numeric: lining-nums tabular-nums;
+    text-align: right;
+  }
+  .laps .meta {
+    grid-column: 2 / 4;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .laps li.best .lt { color: var(--gold); }
+  .laps li.worst .lt { color: var(--accent); }
+  .laps .empty {
+    display: block;
+    padding: 22px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 300;
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+  footer {
+    margin-top: 48px;
+    text-align: center;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 10px;
+    line-height: 1.8;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+  footer .mark {
+    display: block;
+    font-family: "Bodoni Moda", serif;
+    font-size: 14px;
+    letter-spacing: 6px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  @media (max-width: 420px) {
+    .masthead .hide-sm { display: none; }
+    .stats { gap: 8px; }
+    .stat { padding: 14px 4px 12px; border-radius: 14px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="globe" aria-hidden="true"></canvas>
+
+<main class="page">
+  <div class="masthead">
+    <span>VOL. 01</span>
+    <span class="hide-sm">시간에 관한 작은 기록</span>
+    <span id="today"></span>
+  </div>
+
+  <h1 class="brand">MEANWHILE</h1>
+  <p class="tagline">— 당신이 기다리는 동안, 세상은 —</p>
+
+  <section class="time-block">
+    <div class="label">ELAPSED · 경과 시간</div>
+    <div class="time"><span id="main">00:00</span><span class="cs" id="cs">00</span></div>
+    <p class="quip" id="quip">아직 아무 일도 일어나지 않았어요. 정말요.</p>
+  </section>
+
+  <div class="controls">
+    <button id="secondary" disabled>랩</button>
+    <button id="toggle">시작</button>
+  </div>
+  <p class="keys"><kbd>Space</kbd> 시작·정지 &nbsp; <kbd>L</kbd> 랩 &nbsp; <kbd>R</kbd> 초기화</p>
+
+  <div class="section-head">
+    <span class="no">No. 01</span>
+    <h2>그사이, 세상은</h2>
+    <span class="line"></span>
+  </div>
+  <div class="stats" id="stats"></div>
+  <p class="stats-note">지구본 위 반짝임 하나가 새로 태어난 아기 한 명이에요</p>
+
+  <p class="editorial" id="editorial">
+    시간은 모두에게 공평해요. 쓰는 방법만 다를 뿐.
+    <span class="sig">— Meanwhile</span>
+  </p>
+
+  <div class="section-head">
+    <span class="no">No. 02</span>
+    <h2>당신의 기록</h2>
+    <span class="line"></span>
+  </div>
+  <ul class="laps" id="laps"><li class="empty">시작을 누르고, 순간을 기록해 보세요.</li></ul>
+
+  <footer>
+    <span class="mark">MEANWHILE</span>
+    수치는 공개된 세계 통계를 바탕으로 한 1초당 평균 추정치예요.<br>
+    실제 세상은 이보다 조금 더 복잡하고, 조금 더 아름답습니다.
+  </footer>
+</main>
+
+<script>
+/* ═════════════ 데이터 ═════════════ */
+const ICONS = {
+  baby:   '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3.1-7 7-7s7 3 7 7"/><path d="M10.5 7.5h.01M13.5 7.5h.01"/></svg>',
+  heart:  '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+  coffee: '<svg viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3v3M12 3v3"/></svg>',
+  earth:  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/></svg>',
+  tree:   '<svg viewBox="0 0 24 24"><path d="M12 21v-6"/><path d="M12 3 6 11h3l-4 5h14l-4-5h3z"/></svg>',
+  cloud:  '<svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.3 4.4 4.4 0 0 0 7 18z"/></svg>',
+};
+
+// 1초당 평균 추정치
+const FACTS = [
+  { id: 'baby',   rate: 4.3,  unit: '명',    label: '아기 탄생' },
+  { id: 'heart',  rate: 1.2,  unit: '번',    label: '내 심장' },
+  { id: 'coffee', rate: 650,  unit: '잔',    label: '한국 커피' },
+  { id: 'earth',  rate: 29.8, unit: 'km',    label: '지구 이동' },
+  { id: 'tree',   rate: 0.44, unit: '축구장', label: '사라진 숲', digits: 1, alert: true },
+  { id: 'cloud',  rate: 1170, unit: '톤',    label: 'CO₂ 배출',  alert: true },
+];
+
+const QUIPS = [
+  [0.01, '시작이 반이에요. 나머지 반은… 곧 알게 돼요.'],
+  [10,   '커피 물 올리기엔 아직 이른 시간이죠.'],
+  [60,   '라면 물이 끓고 있어요. 아마도.'],
+  [180,  '라면 완성! 지금 드세요. 지금!'],
+  [215,  '이제 라면이 아니라, 불어 터진 국수예요.'],
+  [300,  '"5분만"이 공식적으로 끝났어요. 공식적으로는요.'],
+  [420,  '"엄마, 5분만"의 실제 평균은 17분이라는 소문이…'],
+  [900,  '마스크팩 떼세요. 이제 팩이 당신 수분을 가져가요.'],
+  [1200, '"거의 다 왔어"의 진짜 의미에 가까워지고 있어요.'],
+  [1800, '드라마 반 편. 다음 화 자동재생은 참으세요.'],
+  [3600, '한 시간. 이쯤 되면 시계도 당신을 존경해요.'],
+  [7200, '두 시간. 혹시 저 켜두고 잊으신 건 아니죠?'],
+];
+const IDLE_QUIP = '아직 아무 일도 일어나지 않았어요. 정말요.';
+
+const EDITORIALS = [
+  '시간은 모두에게 공평해요. 쓰는 방법만 다를 뿐.',
+  '당신이 기다리는 동안에도, 누군가는 처음으로 숨을 쉬었어요.',
+  '가장 바쁜 1분에도, 숲은 조용히 줄어들고 있어요.',
+  '지구는 초속 30km로 달리는 중. 당신은 조금 쉬어도 괜찮아요.',
+  '세상에서 가장 비싼 명품은, 결국 시간이에요.',
+  '기다림은 낭비가 아니에요. 세상이 움직이는 걸 지켜보는 시간이죠.',
+  '오늘의 1분을 내일로 미룰 수는 없어요. 라면도 마찬가지고요.',
+  '우리가 흘려보낸 1초마다, 하늘엔 1,000톤이 넘는 탄소가 쌓여요.',
+  '심장은 한 번도 "5분만"이라고 말한 적이 없어요.',
+];
+
+function lapCaption(sec) {
+  if (sec < 3)    return '눈 깜짝할 새. 말 그대로.';
+  if (sec < 30)   return '번개처럼 지나간 순간.';
+  if (sec < 170)  return '라면 한 개 미만. 아쉽게도.';
+  if (sec < 240)  return '딱 라면 한 그릇의 시간.';
+  if (sec < 420)  return '"5분만"의 정직한 버전.';
+  if (sec < 1200) return '"엄마 5분만"의 현실 버전.';
+  if (sec < 1800) return '마스크팩 하나, 넉넉히.';
+  return '"거의 다 왔어"보다 길었어요.';
+}
+
+/* ═════════════ 숫자 포맷 (만·억 단위로 간결하게) ═════════════ */
+function compact(v, digits = 0) {
+  const trim = s => s.replace(/\.0$/, '');
+  if (v >= 1e8) return trim((v / 1e8).toFixed(1)) + '억';
+  if (v >= 1e4) return trim((v / 1e4).toFixed(1)) + '만';
+  return v.toLocaleString('ko-KR', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+
+/* ═════════════ 스탑워치 ═════════════ */
+const $ = id => document.getElementById(id);
+const mainEl = $('main'), csEl = $('cs'), quipEl = $('quip');
+const toggleBtn = $('toggle'), secondaryBtn = $('secondary');
+const lapsEl = $('laps'), edEl = $('editorial');
+
+const today = new Date();
+$('today').textContent = today.getFullYear() + '.' + String(today.getMonth() + 1).padStart(2, '0') + '.' + String(today.getDate()).padStart(2, '0');
+
+FACTS.forEach(f => {
+  const el = document.createElement('div');
+  el.className = 'stat' + (f.alert ? ' alert' : '');
+  el.innerHTML = ICONS[f.id] +
+    '<div class="v"><span>0</span><span class="u">' + f.unit + '</span></div>' +
+    '<div class="k">' + f.label + '</div>';
+  $('stats').appendChild(el);
+  f.el = el.querySelector('.v span');
+  f.last = '0';
+});
+
+let running = false, startTime = 0, elapsed = 0, lastLapTotal = 0, laps = [], rafId = null;
+let edIndex = 0, edTimer = null, lastQuip = IDLE_QUIP, birthsShown = 0;
+
+const now = () => running ? elapsed + (performance.now() - startTime) : elapsed;
+const pad = n => String(n).padStart(2, '0');
+function fmt(ms) {
+  const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s = Math.floor(ms / 1000) % 60;
+  return (h ? h + ':' : '') + pad(m) + ':' + pad(s);
+}
+const fmtFull = ms => fmt(ms) + '.' + pad(Math.floor(ms / 10) % 100);
+
+function setQuip(text) {
+  if (text === lastQuip) return;
+  lastQuip = text;
+  quipEl.style.opacity = 0;
+  setTimeout(() => { quipEl.textContent = text; quipEl.style.opacity = 1; }, 250);
+}
+
+function render() {
+  const t = now(), sec = t / 1000;
+  mainEl.textContent = fmt(t);
+  csEl.textContent = pad(Math.floor(t / 10) % 100);
+
+  for (const f of FACTS) {
+    const raw = sec * f.rate;
+    const txt = compact(f.digits ? raw : Math.floor(raw), f.digits || 0);
+    if (txt !== f.last) { f.el.textContent = txt; f.last = txt; }
+  }
+
+  // 새로 태어난 아기만큼 지구본에 반짝임
+  const births = Math.floor(sec * 4.3);
+  while (birthsShown < births) { Globe.birth(); birthsShown++; }
+  if (births < birthsShown) birthsShown = births;
+
+  let q = t === 0 ? IDLE_QUIP : QUIPS[0][1];
+  for (const [th, text] of QUIPS) if (sec >= th) q = text;
+  setQuip(q);
+
+  if (running) rafId = requestAnimationFrame(render);
+}
+
+function rotateEditorial() {
+  edEl.classList.add('fade');
+  setTimeout(() => {
+    edIndex = (edIndex + 1) % EDITORIALS.length;
+    edEl.innerHTML = EDITORIALS[edIndex] + '<span class="sig">— Meanwhile</span>';
+    edEl.classList.remove('fade');
+  }, 800);
+}
+
+function renderLaps() {
+  if (!laps.length) {
+    lapsEl.innerHTML = '<li class="empty">시작을 누르고, 순간을 기록해 보세요.</li>';
+    return;
+  }
+  let best = -1, worst = -1;
+  if (laps.length >= 2) {
+    const v = laps.map(l => l.lap);
+    best = v.indexOf(Math.min(...v));
+    worst = v.indexOf(Math.max(...v));
+  }
+  lapsEl.innerHTML = '';
+  for (let i = laps.length - 1; i >= 0; i--) {
+    const L = laps[i], s = L.lap / 1000;
+    const li = document.createElement('li');
+    if (i === best) li.className = 'best';
+    if (i === worst) li.className = 'worst';
+    li.innerHTML =
+      '<span class="idx">' + pad(i + 1) + '</span>' +
+      '<span class="caption">' + lapCaption(s) + '</span>' +
+      '<span class="lt">' + fmtFull(L.lap) + '</span>' +
+      '<span class="meta">그사이 아기 ' + compact(Math.floor(s * 4.3)) + '명 · 커피 ' + compact(Math.floor(s * 650)) + '잔</span>';
+    lapsEl.appendChild(li);
+  }
+}
+
+function updateButtons() {
+  toggleBtn.textContent = running ? '정지' : (elapsed > 0 ? '계속' : '시작');
+  toggleBtn.classList.toggle('running', running);
+  secondaryBtn.textContent = (!running && elapsed > 0) ? '초기화' : '랩';
+  secondaryBtn.disabled = !running && elapsed === 0;
+}
+
+function toggle() {
+  if (running) {
+    elapsed += performance.now() - startTime;
+    running = false;
+    cancelAnimationFrame(rafId);
+    clearInterval(edTimer);
+    render();
+  } else {
+    startTime = performance.now();
+    running = true;
+    render();
+    edTimer = setInterval(rotateEditorial, 12000);
+  }
+  updateButtons();
+}
+
+function lap() {
+  if (!running) return;
+  const total = now();
+  laps.push({ lap: total - lastLapTotal, total });
+  lastLapTotal = total;
+  renderLaps();
+}
+
+function reset() {
+  if (running) return;
+  elapsed = 0; lastLapTotal = 0; laps = []; birthsShown = 0;
+  render(); renderLaps(); updateButtons();
+}
+
+toggleBtn.addEventListener('click', toggle);
+secondaryBtn.addEventListener('click', () => running ? lap() : reset());
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  else if (e.key === 'l' || e.key === 'L') lap();
+  else if (e.key === 'r' || e.key === 'R') reset();
+});
+
+/* ═════════════ 지구촌 배경 애니메이션 ═════════════
+   천천히 도는 지구본 + 세계 도시 불빛 + 도시를 잇는 빛의 항로 */
+const Globe = (() => {
+  const canvas = $('globe');
+  const ctx = canvas.getContext('2d');
+  const DEG = Math.PI / 180;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const CITIES = [
+    ['서울', 37.57, 126.98], ['도쿄', 35.68, 139.69], ['베이징', 39.9, 116.4], ['상하이', 31.23, 121.47],
+    ['홍콩', 22.3, 114.17], ['싱가포르', 1.35, 103.82], ['방콕', 13.75, 100.5], ['뭄바이', 19.08, 72.88],
+    ['델리', 28.61, 77.21], ['두바이', 25.2, 55.27], ['이스탄불', 41.01, 28.98], ['모스크바', 55.76, 37.62],
+    ['카이로', 30.04, 31.24], ['라고스', 6.52, 3.38], ['나이로비', -1.29, 36.82], ['요하네스버그', -26.2, 28.05],
+    ['파리', 48.86, 2.35], ['런던', 51.51, -0.13], ['베를린', 52.52, 13.4], ['마드리드', 40.42, -3.7],
+    ['로마', 41.9, 12.5], ['레이캬비크', 64.15, -21.94], ['뉴욕', 40.71, -74.01], ['토론토', 43.65, -79.38],
+    ['LA', 34.05, -118.24], ['멕시코시티', 19.43, -99.13], ['상파울루', -23.55, -46.63], ['부에노스아이레스', -34.6, -58.38],
+    ['리마', -12.05, -77.04], ['시드니', -33.87, 151.21], ['오클랜드', -36.85, 174.76], ['자카르타', -6.2, 106.85],
+    ['마닐라', 14.6, 120.98], ['호놀룰루', 21.3, -157.86], ['앵커리지', 61.22, -149.9], ['밴쿠버', 49.28, -123.12],
+    ['리야드', 24.71, 46.68], ['테헤란', 35.69, 51.39], ['산티아고', -33.45, -70.67], ['보고타', 4.71, -74.07],
+  ].map(([name, lat, lon]) => ({ name, v: toVec(lat, lon), seoul: name === '서울' }));
+  const SEOUL = CITIES[0];
+
+  function toVec(lat, lon) {
+    const p = lat * DEG, l = lon * DEG;
+    return [Math.cos(p) * Math.cos(l), Math.cos(p) * Math.sin(l), Math.sin(p)];
+  }
+
+  let W, H, R, cx, cy, dpr;
+  let lon0 = -127 * DEG;          // 서울이 정면에 오도록 시작
+  const tilt = 22 * DEG;
+  let colors = {};
+  const arcs = [], pulses = [];
+
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    colors = {
+      gold: cs.getPropertyValue('--gold').trim(),
+      accent: cs.getPropertyValue('--accent').trim(),
+      ink: cs.getPropertyValue('--ink').trim(),
+      paper: cs.getPropertyValue('--paper-2').trim(),
+    };
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    R = Math.min(W * 0.46, H * 0.44, 420);
+    cx = W / 2;
+    cy = Math.min(H * 0.42, 360);
+  }
+
+  // 3D → 화면 좌표. d > 0 이면 앞면
+  function project(v, scale = 1) {
+    const c = Math.cos(lon0), s = Math.sin(lon0);
+    const x1 = v[0] * c + v[1] * s;
+    const y1 = -v[0] * s + v[1] * c;
+    const z1 = v[2];
+    const d = x1 * Math.cos(tilt) + z1 * Math.sin(tilt);
+    const up = -x1 * Math.sin(tilt) + z1 * Math.cos(tilt);
+    return { x: cx + R * scale * y1, y: cy - R * scale * up, d };
+  }
+
+  function slerp(a, b, t) {
+    const dot = Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]));
+    const om = Math.acos(dot);
+    if (om < 1e-4) return a.slice();
+    const sa = Math.sin((1 - t) * om) / Math.sin(om), sb = Math.sin(t * om) / Math.sin(om);
+    return [a[0] * sa + b[0] * sb, a[1] * sa + b[1] * sb, a[2] * sa + b[2] * sb];
+  }
+
+  function spawnArc() {
+    let a = Math.random() < 0.35 ? SEOUL : CITIES[(Math.random() * CITIES.length) | 0];
+    let b = CITIES[(Math.random() * CITIES.length) | 0];
+    if (a === b) return;
+    arcs.push({ a: a.v, b: b.v, t0: performance.now(), dur: 2600 + Math.random() * 1800 });
+  }
+
+  function birth() {
+    const c = CITIES[(Math.random() * CITIES.length) | 0];
+    // 보이는 쪽 도시를 우선
+    const pick = project(c.v).d > 0.1 ? c : CITIES.find(x => project(x.v).d > 0.2) || c;
+    pulses.push({ v: pick.v, t0: performance.now() });
+    if (pulses.length > 60) pulses.shift();
+  }
+
+  function line(points, color, alpha, width) {
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    let pen = false;
+    for (const p of points) {
+      if (p.d > 0) { pen ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); pen = true; }
+      else pen = false;
+    }
+    ctx.stroke();
+  }
+
+  function draw(now) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalAlpha = 1;
+
+    // 구 본체: 은은한 광택
+    const g = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.1, cx, cy, R);
+    g.addColorStop(0, colors.paper);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
+
+    // 외곽선 + 바깥 고리
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = colors.gold;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = 0.12;
+    ctx.setLineDash([2, 6]);
+    ctx.beginPath(); ctx.arc(cx, cy, R * 1.12, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 위선 · 경선
+    for (let lat = -60; lat <= 60; lat += 20) {
+      const pts = [];
+      for (let lon = 0; lon <= 360; lon += 5) pts.push(project(toVec(lat, lon)));
+      line(pts, colors.gold, lat === 0 ? 0.32 : 0.16, lat === 0 ? 1 : 0.7);
+    }
+    for (let lon = 0; lon < 360; lon += 20) {
+      const pts = [];
+      for (let lat = -90; lat <= 90; lat += 5) pts.push(project(toVec(lat, lon)));
+      line(pts, colors.gold, 0.16, 0.7);
+    }
+
+    // 항로
+    for (let i = arcs.length - 1; i >= 0; i--) {
+      const A = arcs[i];
+      const p = (now - A.t0) / A.dur;
+      if (p > 1.4) { arcs.splice(i, 1); continue; }
+      const head = Math.min(p, 1);
+      const tail = Math.max(0, p - 0.45);
+      const fade = p > 1 ? 1 - (p - 1) / 0.4 : 1;
+      const pts = [];
+      for (let k = 0; k <= 40; k++) {
+        const t = tail + (head - tail) * (k / 40);
+        const lift = 1 + 0.12 * Math.sin(Math.PI * t);
+        pts.push(project(slerp(A.a, A.b, t), lift));
+      }
+      line(pts, colors.accent, 0.55 * fade, 1.3);
+      const hp = pts[pts.length - 1];
+      if (hp.d > 0 && p < 1) {
+        ctx.globalAlpha = 0.85 * fade;
+        ctx.fillStyle = colors.accent;
+        ctx.beginPath(); ctx.arc(hp.x, hp.y, 2, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    // 도시 불빛
+    for (const c of CITIES) {
+      const p = project(c.v);
+      if (p.d <= 0) continue;
+      const tw = 0.6 + 0.4 * Math.sin(now / 700 + c.v[0] * 10);
+      ctx.globalAlpha = (0.35 + 0.5 * p.d) * tw;
+      ctx.fillStyle = c.seoul ? colors.accent : colors.gold;
+      ctx.beginPath(); ctx.arc(p.x, p.y, c.seoul ? 3.2 : 2.1, 0, Math.PI * 2); ctx.fill();
+      if (c.seoul) {
+        ctx.globalAlpha = 0.25 * p.d;
+        ctx.strokeStyle = colors.accent;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 7 + 2 * Math.sin(now / 500), 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+
+    // 탄생 반짝임
+    for (let i = pulses.length - 1; i >= 0; i--) {
+      const P = pulses[i];
+      const p = (now - P.t0) / 1800;
+      if (p > 1) { pulses.splice(i, 1); continue; }
+      const pt = project(P.v);
+      if (pt.d <= 0) continue;
+      ctx.globalAlpha = (1 - p) * 0.8;
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(pt.x, pt.y, 3 + p * 16, 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  let last = performance.now(), nextArc = 0;
+  function loop(now) {
+    const dt = Math.min(now - last, 100);
+    last = now;
+    lon0 += dt * 0.000045 * (running ? 2.2 : 1);   // 스탑워치가 달리면 지구도 조금 더 빨리
+    if (now > nextArc) {
+      spawnArc();
+      nextArc = now + (running ? 500 : 1100) + Math.random() * 700;
+    }
+    draw(now);
+    requestAnimationFrame(loop);
+  }
+
+  readColors();
+  resize();
+  addEventListener('resize', resize);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
+  if (reduceMotion) draw(performance.now());
+  else requestAnimationFrame(loop);
+
+  return { birth };
+})();
+</script>
+</body>
+</html>
