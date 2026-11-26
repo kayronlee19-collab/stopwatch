@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meanwhile 스탑워치</title>
+<title>Meanwhile Stopwatch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Gowun+Batang&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Gowun+Batang&family=Noto+Serif+SC:wght@300;400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
   /* 해 질 녘에서 밤으로 넘어가는 하늘 */
   :root {
@@ -29,7 +29,7 @@
     min-height: 100vh;
     background: var(--night);
     color: var(--ink);
-    font-family: "Gowun Batang", "Noto Serif KR", "Batang", serif;
+    font-family: "Cormorant Garamond", "Gowun Batang", Georgia, serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
@@ -109,7 +109,8 @@
   .tagline {
     text-align: center;
     margin: 0;
-    font-size: 16px;
+    font-size: 19px;
+    font-style: italic;
     color: var(--ink-soft);
     letter-spacing: 1px;
   }
@@ -156,7 +157,8 @@
     border: 1px solid var(--rule);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    font-size: 15px;
+    font-size: 18px;
+    font-style: italic;
     color: var(--ink-soft);
     transition: opacity .5s ease;
   }
@@ -221,7 +223,7 @@
     font-size: 15px;
     color: var(--peach);
   }
-  .section-head h2 { margin: 0; font-weight: 400; font-size: 20px; }
+  .section-head h2 { margin: 0; font-weight: 500; font-size: 23px; }
   .section-head .line {
     flex: 1;
     height: 1px;
@@ -286,7 +288,8 @@
   .stats-note {
     margin: 14px 0 0;
     text-align: center;
-    font-size: 13px;
+    font-size: 16px;
+    font-style: italic;
     color: var(--muted);
   }
 
@@ -301,8 +304,9 @@
     border: 1px solid var(--rule);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    font-size: clamp(17px, 4.6vw, 21px);
-    line-height: 1.8;
+    font-size: clamp(20px, 5.2vw, 25px);
+    font-style: italic;
+    line-height: 1.6;
     transition: opacity .9s ease, transform .9s ease, filter .9s ease;
   }
   .editorial::before {
@@ -354,7 +358,7 @@
     background-clip: text;
     color: transparent;
   }
-  .laps .caption { font-size: 15px; }
+  .laps .caption { font-size: 18px; font-style: italic; }
   .laps .lt {
     font-family: "Bodoni Moda", serif;
     font-size: 20px;
@@ -364,7 +368,7 @@
   .laps .meta { grid-column: 2 / 4; font-family: "Noto Sans KR", sans-serif; font-size: 11px; color: var(--muted); }
   .laps li.best .lt { color: var(--aqua); }
   .laps li.worst .lt { color: var(--rose); }
-  .laps .empty { display: block; padding: 22px 0; text-align: center; color: var(--muted); font-size: 14px; }
+  .laps .empty { display: block; padding: 22px 0; text-align: center; color: var(--muted); font-size: 17px; font-style: italic; }
   @keyframes rise { from { opacity: 0; transform: translateY(-6px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
 
   footer {
@@ -385,6 +389,42 @@
     margin-bottom: 6px;
   }
 
+  /* ── 언어 전환 버튼 ── */
+  .lang {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 3;
+    flex: none;
+    height: 34px;
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    border-radius: 999px;
+    background: var(--glass-strong);
+    border: 1px solid var(--rule);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+  .lang span { padding: 5px 11px; border-radius: 999px; transition: background .3s, color .3s; }
+  .lang span.on { background: linear-gradient(110deg, var(--peach), var(--rose)); color: var(--btn-text); }
+  .page { padding-top: 64px; }
+
+  /* 한국어일 때 글꼴과 크기 */
+  html[lang="ko"] body { font-family: "Gowun Batang", "Noto Serif KR", "Batang", serif; }
+  html[lang="zh"] body { font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; }
+  html[lang="ko"] .tagline, html[lang="zh"] .tagline { font-size: 16px; font-style: normal; }
+  html[lang="ko"] .quip, html[lang="zh"] .quip { font-size: 15px; font-style: normal; }
+  html[lang="ko"] .section-head h2, html[lang="zh"] .section-head h2 { font-size: 20px; font-weight: 400; }
+  html[lang="ko"] .stats-note, html[lang="zh"] .stats-note { font-size: 13px; font-style: normal; }
+  html[lang="ko"] .editorial, html[lang="zh"] .editorial { font-size: clamp(17px, 4.6vw, 21px); font-style: normal; line-height: 1.8; }
+  html[lang="ko"] .laps .caption, html[lang="zh"] .laps .caption { font-size: 15px; font-style: normal; }
+  html[lang="ko"] .laps .empty, html[lang="zh"] .laps .empty { font-size: 14px; font-style: normal; }
+
   @media (max-width: 420px) {
     .masthead .hide-sm { display: none; }
     .stats { gap: 8px; }
@@ -399,52 +439,50 @@
 <div class="sky" aria-hidden="true"></div>
 <canvas id="globe" aria-hidden="true"></canvas>
 
+<button class="lang" id="lang" aria-label="Language / 언어"><span data-l="ko">한국어</span><span data-l="en">EN</span><span data-l="zh">中文</span></button>
+
 <main class="page">
   <div class="masthead">
     <span>VOL. 01</span>
-    <span class="hide-sm">시간에 관한 작은 기록</span>
+    <span class="hide-sm" data-i18n="sub"></span>
     <span id="today"></span>
   </div>
 
   <h1 class="brand">MEANWHILE</h1>
-  <p class="tagline">— 당신이 기다리는 동안, 세상은 —</p>
+  <p class="tagline" data-i18n="tagline"></p>
 
   <section class="time-block">
-    <div class="label">ELAPSED · 경과 시간</div>
+    <div class="label" data-i18n="elapsed"></div>
     <div class="time"><span id="main">00:00</span><span class="cs" id="cs">00</span></div>
-    <p class="quip" id="quip">아직 아무 일도 일어나지 않았어요. 정말요.</p>
+    <p class="quip" id="quip"></p>
   </section>
 
   <div class="controls">
-    <button id="secondary" disabled>랩</button>
-    <button id="toggle">시작</button>
+    <button id="secondary" disabled></button>
+    <button id="toggle"></button>
   </div>
-  <p class="keys"><kbd>Space</kbd> 시작·정지 &nbsp; <kbd>L</kbd> 랩 &nbsp; <kbd>R</kbd> 초기화</p>
+  <p class="keys" data-i18n="keys"></p>
 
   <div class="section-head">
     <span class="no">No. 01</span>
-    <h2>그사이, 세상은</h2>
+    <h2 data-i18n="world"></h2>
     <span class="line"></span>
   </div>
   <div class="stats" id="stats"></div>
-  <p class="stats-note">지구본 위 반짝임 하나가 새로 태어난 아기 한 명이에요</p>
+  <p class="stats-note" data-i18n="note"></p>
 
-  <p class="editorial" id="editorial">
-    시간은 모두에게 공평해요. 쓰는 방법만 다를 뿐.
-    <span class="sig">— Meanwhile</span>
-  </p>
+  <p class="editorial" id="editorial"></p>
 
   <div class="section-head">
     <span class="no">No. 02</span>
-    <h2>당신의 기록</h2>
+    <h2 data-i18n="mine"></h2>
     <span class="line"></span>
   </div>
-  <ul class="laps" id="laps"><li class="empty">시작을 누르고, 순간을 기록해 보세요.</li></ul>
+  <ul class="laps" id="laps"></ul>
 
   <footer>
     <span class="mark">MEANWHILE</span>
-    수치는 공개된 세계 통계를 바탕으로 한 1초당 평균 추정치예요.<br>
-    실제 세상은 이보다 조금 더 복잡하고, 조금 더 아름답습니다.
+    <span data-i18n="footer"></span>
   </footer>
 </main>
 
@@ -461,59 +499,205 @@ const ICONS = {
 
 // 1초당 평균 추정치 · 카드마다 고유한 색
 const FACTS = [
-  { id: 'baby',   rate: 4.3,  unit: '명',    label: '아기 탄생', color: '#ffcf9e' },
-  { id: 'heart',  rate: 1.2,  unit: '번',    label: '내 심장',   color: '#ff8fb1' },
-  { id: 'coffee', rate: 650,  unit: '잔',    label: '한국 커피', color: '#f5b78c' },
-  { id: 'earth',  rate: 29.8, unit: 'km',    label: '지구 이동', color: '#8ee8e2' },
-  { id: 'tree',   rate: 0.44, unit: '축구장', label: '사라진 숲', color: '#a8e6a1', digits: 1, alert: true },
-  { id: 'cloud',  rate: 1170, unit: '톤',    label: 'CO₂ 배출',  color: '#c7a6ff', alert: true },
+  { id: 'baby',   rate: 4.3,  color: '#ffcf9e' },
+  { id: 'heart',  rate: 1.2,  color: '#ff8fb1' },
+  { id: 'coffee', rate: 650,  color: '#f5b78c' },
+  { id: 'earth',  rate: 29.8, color: '#8ee8e2' },
+  { id: 'tree',   rate: 0.44, color: '#a8e6a1', digits: 1, alert: true },
+  { id: 'cloud',  rate: 1170, color: '#c7a6ff', alert: true },
 ];
 
-const QUIPS = [
-  [0.01, '시작이 반이에요. 나머지 반은… 곧 알게 돼요.'],
-  [10,   '커피 물 올리기엔 아직 이른 시간이죠.'],
-  [60,   '라면 물이 끓고 있어요. 아마도.'],
-  [180,  '라면 완성! 지금 드세요. 지금!'],
-  [215,  '이제 라면이 아니라, 불어 터진 국수예요.'],
-  [300,  '"5분만"이 공식적으로 끝났어요. 공식적으로는요.'],
-  [420,  '"엄마, 5분만"의 실제 평균은 17분이라는 소문이…'],
-  [900,  '마스크팩 떼세요. 이제 팩이 당신 수분을 가져가요.'],
-  [1200, '"거의 다 왔어"의 진짜 의미에 가까워지고 있어요.'],
-  [1800, '드라마 반 편. 다음 화 자동재생은 참으세요.'],
-  [3600, '한 시간. 이쯤 되면 시계도 당신을 존경해요.'],
-  [7200, '두 시간. 혹시 저 켜두고 잊으신 건 아니죠?'],
-];
-const IDLE_QUIP = '아직 아무 일도 일어나지 않았어요. 정말요.';
+// 유머 문구가 바뀌는 시점(초)과 랩 캡션 구간(초)
+const QUIP_TIMES = [0.01, 10, 60, 180, 215, 300, 420, 900, 1200, 1800, 3600, 7200];
+const LAP_LIMITS = [3, 30, 170, 240, 420, 1200, 1800];
 
-const EDITORIALS = [
-  '시간은 모두에게 공평해요. 쓰는 방법만 다를 뿐.',
-  '당신이 기다리는 동안에도, 누군가는 처음으로 숨을 쉬었어요.',
-  '가장 바쁜 1분에도, 숲은 조용히 줄어들고 있어요.',
-  '지구는 초속 30km로 달리는 중. 당신은 조금 쉬어도 괜찮아요.',
-  '세상에서 가장 비싼 명품은, 결국 시간이에요.',
-  '기다림은 낭비가 아니에요. 세상이 움직이는 걸 지켜보는 시간이죠.',
-  '오늘의 1분을 내일로 미룰 수는 없어요. 라면도 마찬가지고요.',
-  '우리가 흘려보낸 1초마다, 하늘엔 1,000톤이 넘는 탄소가 쌓여요.',
-  '심장은 한 번도 "5분만"이라고 말한 적이 없어요.',
-];
+/* ═════════════ 한국어 · English ═════════════ */
+const I18N = {
+  ko: {
+    locale: 'ko-KR',
+    scale: [[1e8, '억', 1e8], [1e4, '만', 1e4]],
+    sub: '시간에 관한 작은 기록',
+    tagline: '— 당신이 기다리는 동안, 세상은 —',
+    elapsed: 'ELAPSED · 경과 시간',
+    keys: '<kbd>Space</kbd> 시작·정지 &nbsp; <kbd>L</kbd> 랩 &nbsp; <kbd>R</kbd> 초기화',
+    world: '그사이, 세상은',
+    note: '지구본 위 반짝임 하나가 새로 태어난 아기 한 명이에요',
+    mine: '당신의 기록',
+    empty: '시작을 누르고, 순간을 기록해 보세요.',
+    footer: '수치는 공개된 세계 통계를 바탕으로 한 1초당 평균 추정치예요.<br>실제 세상은 이보다 조금 더 복잡하고, 조금 더 아름답습니다.',
+    start: '시작', stop: '정지', resume: '계속', lap: '랩', reset: '초기화',
+    facts: {
+      baby: ['명', '아기 탄생'], heart: ['번', '내 심장'], coffee: ['잔', '한국 커피'],
+      earth: ['km', '지구 이동'], tree: ['축구장', '사라진 숲'], cloud: ['톤', 'CO₂ 배출'],
+    },
+    idle: '아직 아무 일도 일어나지 않았어요. 정말요.',
+    quips: [
+      '시작이 반이에요. 나머지 반은… 곧 알게 돼요.',
+      '커피 물 올리기엔 아직 이른 시간이죠.',
+      '라면 물이 끓고 있어요. 아마도.',
+      '라면 완성! 지금 드세요. 지금!',
+      '이제 라면이 아니라, 불어 터진 국수예요.',
+      '"5분만"이 공식적으로 끝났어요. 공식적으로는요.',
+      '"엄마, 5분만"의 실제 평균은 17분이라는 소문이…',
+      '마스크팩 떼세요. 이제 팩이 당신 수분을 가져가요.',
+      '"거의 다 왔어"의 진짜 의미에 가까워지고 있어요.',
+      '드라마 반 편. 다음 화 자동재생은 참으세요.',
+      '한 시간. 이쯤 되면 시계도 당신을 존경해요.',
+      '두 시간. 혹시 저 켜두고 잊으신 건 아니죠?',
+    ],
+    editorials: [
+      '시간은 모두에게 공평해요. 쓰는 방법만 다를 뿐.',
+      '당신이 기다리는 동안에도, 누군가는 처음으로 숨을 쉬었어요.',
+      '가장 바쁜 1분에도, 숲은 조용히 줄어들고 있어요.',
+      '지구는 초속 30km로 달리는 중. 당신은 조금 쉬어도 괜찮아요.',
+      '세상에서 가장 비싼 명품은, 결국 시간이에요.',
+      '기다림은 낭비가 아니에요. 세상이 움직이는 걸 지켜보는 시간이죠.',
+      '오늘의 1분을 내일로 미룰 수는 없어요. 라면도 마찬가지고요.',
+      '우리가 흘려보낸 1초마다, 하늘엔 1,000톤이 넘는 탄소가 쌓여요.',
+      '심장은 한 번도 "5분만"이라고 말한 적이 없어요.',
+    ],
+    laps: [
+      '눈 깜짝할 새. 말 그대로.',
+      '번개처럼 지나간 순간.',
+      '라면 한 개 미만. 아쉽게도.',
+      '딱 라면 한 그릇의 시간.',
+      '"5분만"의 정직한 버전.',
+      '"엄마 5분만"의 현실 버전.',
+      '마스크팩 하나, 넉넉히.',
+      '"거의 다 왔어"보다 길었어요.',
+    ],
+    meta: (b, c) => '그사이 아기 ' + b + '명 · 커피 ' + c + '잔',
+  },
+  en: {
+    locale: 'en-US',
+    scale: [[1e9, 'B', 1e9], [1e6, 'M', 1e6], [1e4, 'K', 1e3]],
+    sub: 'A SMALL RECORD OF TIME',
+    tagline: '— while you wait, the world goes on —',
+    elapsed: 'ELAPSED',
+    keys: '<kbd>Space</kbd> start · stop &nbsp; <kbd>L</kbd> lap &nbsp; <kbd>R</kbd> reset',
+    world: 'Meanwhile, the world',
+    note: 'Each blossom of light on the globe is a newborn baby.',
+    mine: 'Your moments',
+    empty: 'Press start, and capture the moment.',
+    footer: 'Figures are per-second averages estimated from public global statistics.<br>The real world is a little more complex, and a little more beautiful.',
+    start: 'START', stop: 'STOP', resume: 'RESUME', lap: 'LAP', reset: 'RESET',
+    facts: {
+      baby: ['', 'Babies born'], heart: ['', 'Heartbeats'], coffee: ['cups', 'Coffee in Korea'],
+      earth: ['km', 'Earth traveled'], tree: ['fields', 'Forest lost'], cloud: ['t', 'CO₂ emitted'],
+    },
+    idle: 'Nothing has happened yet. Really.',
+    quips: [
+      'Well begun is half done. The other half… you’ll see.',
+      'A little early to put the kettle on.',
+      'The ramen water is boiling. Probably.',
+      'Ramen’s ready! Eat it now. Right now!',
+      'That’s not ramen anymore. That’s soggy noodle soup.',
+      '“Just five minutes” is officially over. Officially.',
+      'Rumor has it “Mom, five more minutes” averages seventeen.',
+      'Peel off the sheet mask. It’s stealing your moisture now.',
+      'Getting close to what “almost there” really means.',
+      'Half a drama episode. Resist the autoplay.',
+      'One hour. By now, even the clock respects you.',
+      'Two hours. You didn’t forget about me, did you?',
+    ],
+    editorials: [
+      'Time is fair to everyone. Only how we spend it differs.',
+      'While you waited, someone somewhere took their very first breath.',
+      'Even in the busiest minute, the forests are quietly shrinking.',
+      'Earth is racing at 30 km a second. You are allowed to rest.',
+      'In the end, the finest luxury in the world is time.',
+      'Waiting is not wasted. It is time spent watching the world move.',
+      'You can’t save today’s minute for tomorrow. Same goes for ramen.',
+      'With every second we let slip, over a thousand tonnes of carbon rise.',
+      'Your heart has never once said “just five more minutes.”',
+    ],
+    laps: [
+      'In the blink of an eye. Literally.',
+      'Gone like a flash of lightning.',
+      'Not even one ramen. Sadly.',
+      'Exactly one bowl of ramen.',
+      'The honest version of “five minutes.”',
+      'The real “Mom, five more minutes.”',
+      'One sheet mask, generously.',
+      'Longer than “almost there.”',
+    ],
+    meta: (b, c) => 'Meanwhile: ' + b + ' babies born · ' + c + ' cups of coffee',
+  },
+  zh: {
+    locale: 'zh-CN',
+    scale: [[1e8, '亿', 1e8], [1e4, '万', 1e4]],
+    sub: '关于时间的小小记录',
+    tagline: '— 在你等待的时候，世界仍在转动 —',
+    elapsed: 'ELAPSED · 经过时间',
+    keys: '<kbd>Space</kbd> 开始·停止 &nbsp; <kbd>L</kbd> 计圈 &nbsp; <kbd>R</kbd> 重置',
+    world: '与此同时，世界上',
+    note: '地球仪上的每一次闪光，都是一个新生的婴儿',
+    mine: '你的记录',
+    empty: '按下开始，记录这一刻。',
+    footer: '数据为根据公开的全球统计估算的每秒平均值。<br>真实的世界比这更复杂一点，也更美丽一点。',
+    start: '开始', stop: '停止', resume: '继续', lap: '计圈', reset: '重置',
+    facts: {
+      baby: ['人', '婴儿出生'], heart: ['次', '我的心跳'], coffee: ['杯', '韩国咖啡'],
+      earth: ['km', '地球行进'], tree: ['球场', '消失的森林'], cloud: ['吨', 'CO₂ 排放'],
+    },
+    idle: '还什么都没发生。真的。',
+    quips: [
+      '好的开始是成功的一半。另一半嘛……很快就知道了。',
+      '现在烧咖啡的水还有点早。',
+      '泡面的水正在烧开。大概吧。',
+      '泡面好了！快吃。现在就吃！',
+      '现在已经不是泡面了，是泡烂的面条。',
+      '"就五分钟"正式结束了。至少官方是这样。',
+      '据说"妈，再五分钟"的实际平均是17分钟……',
+      '快揭下面膜吧。现在是面膜在吸你的水分了。',
+      '越来越接近"马上就到"的真正含义了。',
+      '半集电视剧。请忍住自动播放下一集。',
+      '一个小时。到这个地步，连时钟都敬佩你了。',
+      '两个小时。你不会是开着我就忘了吧？',
+    ],
+    editorials: [
+      '时间对每个人都公平，只是使用的方式不同。',
+      '在你等待的时候，某个地方有人第一次呼吸。',
+      '即使在最忙碌的一分钟里，森林也在悄悄减少。',
+      '地球正以每秒30公里的速度奔跑。你稍微休息一下也没关系。',
+      '世上最昂贵的奢侈品，终究是时间。',
+      '等待不是浪费，而是看着世界运转的时间。',
+      '今天的一分钟无法留到明天。泡面也一样。',
+      '我们流逝的每一秒，天空中都会多出一千多吨碳。',
+      '心脏从来没有说过"再五分钟"。',
+    ],
+    laps: [
+      '一眨眼的功夫。字面意思。',
+      '像闪电一样掠过的瞬间。',
+      '不到一碗泡面。可惜。',
+      '刚好一碗泡面的时间。',
+      '"五分钟"的诚实版本。',
+      '"妈，再五分钟"的现实版本。',
+      '一张面膜，绰绰有余。',
+      '比"马上就到"还要久。',
+    ],
+    meta: (b, c) => '与此同时：婴儿 ' + b + ' 人 · 咖啡 ' + c + ' 杯',
+  },
+};
+
+let lang = 'en';
+try { lang = localStorage.getItem('meanwhile-lang') || ''; } catch (e) { lang = ''; }
+if (!I18N[lang]) {
+  const nav = (navigator.language || '').toLowerCase();
+  lang = nav.startsWith('ko') ? 'ko' : nav.startsWith('zh') ? 'zh' : 'en';
+}
+const T = () => I18N[lang];
 
 function lapCaption(sec) {
-  if (sec < 3)    return '눈 깜짝할 새. 말 그대로.';
-  if (sec < 30)   return '번개처럼 지나간 순간.';
-  if (sec < 170)  return '라면 한 개 미만. 아쉽게도.';
-  if (sec < 240)  return '딱 라면 한 그릇의 시간.';
-  if (sec < 420)  return '"5분만"의 정직한 버전.';
-  if (sec < 1200) return '"엄마 5분만"의 현실 버전.';
-  if (sec < 1800) return '마스크팩 하나, 넉넉히.';
-  return '"거의 다 왔어"보다 길었어요.';
+  const i = LAP_LIMITS.findIndex(x => sec < x);
+  return T().laps[i < 0 ? LAP_LIMITS.length : i];
 }
 
-/* ═════════════ 숫자 포맷 (만·억 단위) ═════════════ */
+/* ═════════════ 숫자 포맷 (만·억 / K·M·B) ═════════════ */
 function compact(v, digits = 0) {
   const trim = s => s.replace(/\.0$/, '');
-  if (v >= 1e8) return trim((v / 1e8).toFixed(1)) + '억';
-  if (v >= 1e4) return trim((v / 1e4).toFixed(1)) + '만';
-  return v.toLocaleString('ko-KR', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  for (const [min, suffix, div] of T().scale) if (v >= min) return trim((v / div).toFixed(1)) + suffix;
+  return v.toLocaleString(T().locale, { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 
 /* ═════════════ 스탑워치 ═════════════ */
@@ -530,15 +714,17 @@ FACTS.forEach(f => {
   el.className = 'stat' + (f.alert ? ' alert' : '');
   el.style.setProperty('--c', f.color);
   el.innerHTML = ICONS[f.id] +
-    '<div class="v"><span>0</span><span class="u">' + f.unit + '</span></div>' +
-    '<div class="k">' + f.label + '</div>';
+    '<div class="v"><span>0</span><span class="u"></span></div>' +
+    '<div class="k"></div>';
   $('stats').appendChild(el);
   f.el = el.querySelector('.v span');
-  f.last = '0';
+  f.unitEl = el.querySelector('.u');
+  f.labelEl = el.querySelector('.k');
+  f.last = '';
 });
 
 let running = false, startTime = 0, elapsed = 0, lastLapTotal = 0, laps = [], rafId = null;
-let edIndex = 0, edTimer = null, lastQuip = IDLE_QUIP, birthsShown = 0;
+let edIndex = 0, edTimer = null, lastQuip = '', birthsShown = 0;
 
 const now = () => running ? elapsed + (performance.now() - startTime) : elapsed;
 const pad = n => String(n).padStart(2, '0');
@@ -570,8 +756,11 @@ function render() {
   while (birthsShown < births) { Globe.birth(); birthsShown++; }
   if (births < birthsShown) birthsShown = births;
 
-  let q = t === 0 ? IDLE_QUIP : QUIPS[0][1];
-  for (const [th, text] of QUIPS) if (sec >= th) q = text;
+  let q = T().idle;
+  if (t > 0) {
+    q = T().quips[0];
+    QUIP_TIMES.forEach((th, i) => { if (sec >= th) q = T().quips[i]; });
+  }
   setQuip(q);
 
   if (running) rafId = requestAnimationFrame(render);
@@ -580,15 +769,19 @@ function render() {
 function rotateEditorial() {
   edEl.classList.add('fade');
   setTimeout(() => {
-    edIndex = (edIndex + 1) % EDITORIALS.length;
-    edEl.innerHTML = EDITORIALS[edIndex] + '<span class="sig">— Meanwhile</span>';
+    edIndex = (edIndex + 1) % T().editorials.length;
+    showEditorial();
     edEl.classList.remove('fade');
   }, 900);
 }
 
+function showEditorial() {
+  edEl.innerHTML = T().editorials[edIndex] + '<span class="sig">— Meanwhile</span>';
+}
+
 function renderLaps() {
   if (!laps.length) {
-    lapsEl.innerHTML = '<li class="empty">시작을 누르고, 순간을 기록해 보세요.</li>';
+    lapsEl.innerHTML = '<li class="empty">' + T().empty + '</li>';
     return;
   }
   let best = -1, worst = -1;
@@ -607,15 +800,15 @@ function renderLaps() {
       '<span class="idx">' + pad(i + 1) + '</span>' +
       '<span class="caption">' + lapCaption(s) + '</span>' +
       '<span class="lt">' + fmtFull(L.lap) + '</span>' +
-      '<span class="meta">그사이 아기 ' + compact(Math.floor(s * 4.3)) + '명 · 커피 ' + compact(Math.floor(s * 650)) + '잔</span>';
+      '<span class="meta">' + T().meta(compact(Math.floor(s * 4.3)), compact(Math.floor(s * 650))) + '</span>';
     lapsEl.appendChild(li);
   }
 }
 
 function updateButtons() {
-  toggleBtn.textContent = running ? '정지' : (elapsed > 0 ? '계속' : '시작');
+  toggleBtn.textContent = running ? T().stop : (elapsed > 0 ? T().resume : T().start);
   toggleBtn.classList.toggle('running', running);
-  secondaryBtn.textContent = (!running && elapsed > 0) ? '초기화' : '랩';
+  secondaryBtn.textContent = (!running && elapsed > 0) ? T().reset : T().lap;
   secondaryBtn.disabled = !running && elapsed === 0;
 }
 
@@ -670,17 +863,17 @@ const Globe = (() => {
   const randHue = () => HUES[(Math.random() * HUES.length) | 0];
 
   const CITIES = [
-    ['서울', 37.57, 126.98], ['도쿄', 35.68, 139.69], ['베이징', 39.9, 116.4], ['상하이', 31.23, 121.47],
-    ['홍콩', 22.3, 114.17], ['싱가포르', 1.35, 103.82], ['방콕', 13.75, 100.5], ['뭄바이', 19.08, 72.88],
-    ['델리', 28.61, 77.21], ['두바이', 25.2, 55.27], ['이스탄불', 41.01, 28.98], ['모스크바', 55.76, 37.62],
-    ['카이로', 30.04, 31.24], ['라고스', 6.52, 3.38], ['나이로비', -1.29, 36.82], ['요하네스버그', -26.2, 28.05],
-    ['파리', 48.86, 2.35], ['런던', 51.51, -0.13], ['베를린', 52.52, 13.4], ['마드리드', 40.42, -3.7],
-    ['로마', 41.9, 12.5], ['레이캬비크', 64.15, -21.94], ['뉴욕', 40.71, -74.01], ['토론토', 43.65, -79.38],
-    ['LA', 34.05, -118.24], ['멕시코시티', 19.43, -99.13], ['상파울루', -23.55, -46.63], ['부에노스아이레스', -34.6, -58.38],
-    ['리마', -12.05, -77.04], ['시드니', -33.87, 151.21], ['오클랜드', -36.85, 174.76], ['자카르타', -6.2, 106.85],
-    ['마닐라', 14.6, 120.98], ['호놀룰루', 21.3, -157.86], ['앵커리지', 61.22, -149.9], ['밴쿠버', 49.28, -123.12],
-    ['리야드', 24.71, 46.68], ['테헤란', 35.69, 51.39], ['산티아고', -33.45, -70.67], ['보고타', 4.71, -74.07],
-  ].map(([name, lat, lon]) => ({ name, v: toVec(lat, lon), seoul: name === '서울', hue: randHue(), ph: Math.random() * 6 }));
+    ['Seoul', 37.57, 126.98], ['Tokyo', 35.68, 139.69], ['Beijing', 39.9, 116.4], ['Shanghai', 31.23, 121.47],
+    ['Hong Kong', 22.3, 114.17], ['Singapore', 1.35, 103.82], ['Bangkok', 13.75, 100.5], ['Mumbai', 19.08, 72.88],
+    ['Delhi', 28.61, 77.21], ['Dubai', 25.2, 55.27], ['Istanbul', 41.01, 28.98], ['Moscow', 55.76, 37.62],
+    ['Cairo', 30.04, 31.24], ['Lagos', 6.52, 3.38], ['Nairobi', -1.29, 36.82], ['Johannesburg', -26.2, 28.05],
+    ['Paris', 48.86, 2.35], ['London', 51.51, -0.13], ['Berlin', 52.52, 13.4], ['Madrid', 40.42, -3.7],
+    ['Rome', 41.9, 12.5], ['Reykjavik', 64.15, -21.94], ['New York', 40.71, -74.01], ['Toronto', 43.65, -79.38],
+    ['Los Angeles', 34.05, -118.24], ['Mexico City', 19.43, -99.13], ['Sao Paulo', -23.55, -46.63], ['Buenos Aires', -34.6, -58.38],
+    ['Lima', -12.05, -77.04], ['Sydney', -33.87, 151.21], ['Auckland', -36.85, 174.76], ['Jakarta', -6.2, 106.85],
+    ['Manila', 14.6, 120.98], ['Honolulu', 21.3, -157.86], ['Anchorage', 61.22, -149.9], ['Vancouver', 49.28, -123.12],
+    ['Riyadh', 24.71, 46.68], ['Tehran', 35.69, 51.39], ['Santiago', -33.45, -70.67], ['Bogota', 4.71, -74.07],
+  ].map(([name, lat, lon]) => ({ name, v: toVec(lat, lon), seoul: name === 'Seoul', hue: randHue(), ph: Math.random() * 6 }));
   const SEOUL = CITIES[0];
 
   function toVec(lat, lon) {
@@ -928,6 +1121,37 @@ const Globe = (() => {
 
   return { birth };
 })();
+
+/* ═════════════ 언어 적용 ═════════════ */
+const langBtn = $('lang');
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = T()[el.dataset.i18n]; });
+  langBtn.querySelectorAll('span').forEach(s => s.classList.toggle('on', s.dataset.l === lang));
+  for (const f of FACTS) {
+    const [unit, label] = T().facts[f.id];
+    f.unitEl.textContent = unit;
+    f.labelEl.textContent = label;
+    f.last = '';
+  }
+  lastQuip = '';
+  showEditorial();
+  updateButtons();
+  renderLaps();
+  render();
+}
+
+langBtn.addEventListener('click', e => {
+  const picked = e.target.closest('[data-l]');
+  const order = Object.keys(I18N);
+  lang = picked ? picked.dataset.l : order[(order.indexOf(lang) + 1) % order.length];
+  try { localStorage.setItem('meanwhile-lang', lang); } catch (e) {}
+  applyLang();
+  langBtn.blur();
+});
+
+applyLang();
 </script>
 </body>
 </html>
