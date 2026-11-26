@@ -6,60 +6,76 @@
 <title>Meanwhile 스탑워치</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Gowun+Batang&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
+  /* 해 질 녘에서 밤으로 넘어가는 하늘 */
   :root {
-    --paper: #f3ede4;
-    --paper-2: #e9dfd1;
-    --glass: rgba(246, 241, 233, 0.72);
-    --ink: #1f1b17;
-    --ink-soft: #5c544c;
-    --muted: #9a9086;
-    --rule: #d6ccbe;
-    --accent: #8c3b45;
-    --gold: #a88655;
-    --btn-text: #f3ede4;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #15120e;
-      --paper-2: #221d16;
-      --glass: rgba(26, 22, 17, 0.7);
-      --ink: #efe7da;
-      --ink-soft: #c2b8aa;
-      --muted: #8a8075;
-      --rule: #3a342c;
-      --accent: #d08b92;
-      --gold: #c9a978;
-      --btn-text: #15120e;
-    }
+    --night: #140f33;
+    --glass: rgba(255, 255, 255, 0.07);
+    --glass-strong: rgba(28, 20, 66, 0.55);
+    --ink: #fdf6ff;
+    --ink-soft: #ddd1f0;
+    --muted: #a99ccb;
+    --rule: rgba(255, 255, 255, 0.16);
+    --rose: #ff8fb1;
+    --peach: #ffcf9e;
+    --lilac: #c7a6ff;
+    --aqua: #8ee8e2;
+    --btn-text: #1b1442;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
     min-height: 100vh;
-    background: radial-gradient(ellipse at 50% 35%, var(--paper-2), var(--paper) 70%) fixed;
+    background: var(--night);
     color: var(--ink);
-    font-family: "Noto Serif KR", "Batang", serif;
+    font-family: "Gowun Batang", "Noto Serif KR", "Batang", serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── 오로라 하늘 ── */
+  .sky {
+    position: fixed;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(40% 35% at 20% 20%, rgba(255, 143, 177, 0.55), transparent 70%),
+      radial-gradient(35% 30% at 80% 15%, rgba(255, 207, 158, 0.45), transparent 70%),
+      radial-gradient(45% 40% at 75% 70%, rgba(142, 232, 226, 0.35), transparent 70%),
+      radial-gradient(45% 40% at 15% 80%, rgba(199, 166, 255, 0.5), transparent 70%),
+      linear-gradient(180deg, #2a1b5c 0%, #1a1240 45%, #0f0b2a 100%);
+    filter: blur(30px) saturate(1.2);
+    animation: drift 40s ease-in-out infinite alternate, hue 60s linear infinite;
+  }
+  @keyframes drift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(4%, -3%) scale(1.08); }
+    100% { transform: translate(-3%, 4%) scale(1.03); }
+  }
+  @keyframes hue {
+    0%   { filter: blur(30px) saturate(1.2) hue-rotate(0deg); }
+    50%  { filter: blur(30px) saturate(1.3) hue-rotate(-35deg); }
+    100% { filter: blur(30px) saturate(1.2) hue-rotate(0deg); }
   }
   #globe {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: 1;
     pointer-events: none;
   }
   .page {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: 600px;
     margin: 0 auto;
     padding: 40px 20px 56px;
   }
 
-  /* ── Masthead ── */
+  /* ── 마스트헤드 ── */
   .masthead {
     display: flex;
     justify-content: space-between;
@@ -68,12 +84,13 @@
     font-size: 10px;
     letter-spacing: 3px;
     color: var(--muted);
-    border-bottom: 1px solid var(--ink);
     padding-bottom: 10px;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, transparent, var(--peach), var(--rose), var(--lilac), transparent) 1;
   }
   .brand {
     text-align: center;
-    margin: 28px 0 6px;
+    margin: 30px 0 8px;
     font-family: "Bodoni Moda", serif;
     font-weight: 400;
     font-size: clamp(32px, 9.5vw, 68px);
@@ -81,81 +98,104 @@
     padding-left: 0.14em;
     line-height: 1;
     white-space: nowrap;
+    background: linear-gradient(90deg, var(--peach), var(--rose), var(--lilac), var(--aqua), var(--peach));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: flow 14s linear infinite;
   }
+  @keyframes flow { to { background-position: 300% 0; } }
   .tagline {
     text-align: center;
     margin: 0;
-    font-size: 15px;
-    font-weight: 300;
+    font-size: 16px;
     color: var(--ink-soft);
+    letter-spacing: 1px;
   }
 
-  /* ── Time ── */
-  .time-block {
-    margin: 40px 0 0;
-    padding: 34px 0 28px;
-    text-align: center;
-  }
+  /* ── 시간 ── */
+  .time-block { margin: 36px 0 0; padding: 30px 0 26px; text-align: center; }
   .label {
     font-family: "Noto Sans KR", sans-serif;
     font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--gold);
+    letter-spacing: 5px;
+    color: var(--peach);
   }
   .time {
-    margin: 14px 0 0;
+    margin: 16px 0 0;
     font-family: "Bodoni Moda", serif;
-    font-size: clamp(64px, 21vw, 120px);
+    font-size: clamp(64px, 21vw, 124px);
     line-height: 1;
     font-variant-numeric: lining-nums tabular-nums;
-    text-shadow: 0 0 30px var(--paper), 0 0 12px var(--paper);
+    filter: drop-shadow(0 0 24px rgba(255, 143, 177, 0.35));
+  }
+  .time #main {
+    background: linear-gradient(100deg, #fff4e6 0%, var(--peach) 25%, var(--rose) 50%, var(--lilac) 75%, #fff4e6 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: flow 10s linear infinite;
   }
   .time .cs {
     font-style: italic;
-    font-size: 0.38em;
-    color: var(--accent);
+    font-size: 0.36em;
+    color: var(--aqua);
     margin-left: 4px;
-    vertical-align: 0.9em;
+    vertical-align: 0.95em;
   }
   .quip {
     display: inline-block;
     min-height: 1.6em;
-    margin: 20px auto 0;
+    margin: 22px auto 0;
     max-width: 440px;
-    padding: 6px 16px;
+    padding: 8px 20px;
     border-radius: 999px;
     background: var(--glass);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--rule);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     font-size: 15px;
-    font-weight: 300;
     color: var(--ink-soft);
     transition: opacity .5s ease;
   }
 
-  /* ── Controls ── */
+  /* ── 버튼 ── */
   .controls { display: flex; gap: 12px; margin: 8px 0 0; }
   button {
     flex: 1;
-    height: 52px;
+    height: 54px;
     border-radius: 999px;
     font-family: "Noto Sans KR", sans-serif;
     font-size: 13px;
     letter-spacing: 5px;
     cursor: pointer;
-    transition: background .25s, color .25s, transform .05s, opacity .25s;
+    transition: transform .05s, opacity .25s, box-shadow .3s, background .3s;
   }
   button:active { transform: scale(0.98); }
   button:disabled { opacity: .35; cursor: default; }
   #secondary {
     background: var(--glass);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(10px);
     color: var(--ink);
-    border: 1px solid var(--ink);
+    border: 1px solid rgba(255, 255, 255, 0.35);
   }
-  #secondary:not(:disabled):hover { background: var(--ink); color: var(--btn-text); }
-  #toggle { background: var(--ink); color: var(--btn-text); border: 1px solid var(--ink); }
-  #toggle.running { background: var(--accent); border-color: var(--accent); }
+  #secondary:not(:disabled):hover { background: rgba(255, 255, 255, 0.16); }
+  #toggle {
+    border: none;
+    color: var(--btn-text);
+    font-weight: 400;
+    background: linear-gradient(110deg, var(--peach), var(--rose), var(--lilac), var(--peach));
+    background-size: 300% 100%;
+    animation: flow 8s linear infinite;
+    box-shadow: 0 10px 30px -10px rgba(255, 143, 177, 0.8);
+  }
+  #toggle.running {
+    background: linear-gradient(110deg, var(--aqua), var(--lilac), var(--rose), var(--aqua));
+    background-size: 300% 100%;
+    box-shadow: 0 10px 30px -10px rgba(142, 232, 226, 0.8);
+  }
   .keys {
     text-align: center;
     margin: 14px 0 0;
@@ -173,45 +213,62 @@
     background: var(--glass);
   }
 
-  /* ── Section head ── */
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin: 52px 0 16px;
-  }
+  /* ── 섹션 제목 ── */
+  .section-head { display: flex; align-items: baseline; gap: 14px; margin: 54px 0 16px; }
   .section-head .no {
     font-family: "Bodoni Moda", serif;
     font-style: italic;
     font-size: 15px;
-    color: var(--gold);
+    color: var(--peach);
   }
-  .section-head h2 { margin: 0; font-weight: 400; font-size: 19px; }
-  .section-head .line { flex: 1; height: 1px; background: var(--rule); }
+  .section-head h2 { margin: 0; font-weight: 400; font-size: 20px; }
+  .section-head .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--rose), transparent);
+    opacity: .6;
+  }
 
-  /* ── Stats (간결한 숫자 카드) ── */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
+  /* ── 숫자 카드 ── */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .stat {
-    background: var(--glass);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    --c: var(--peach);
+    position: relative;
+    overflow: hidden;
+    background: var(--glass-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--rule);
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 18px 8px 16px;
     text-align: center;
   }
+  .stat::before {
+    content: "";
+    position: absolute;
+    inset: -40% -40% auto auto;
+    width: 110%;
+    height: 110%;
+    background: radial-gradient(circle, var(--c), transparent 60%);
+    opacity: .22;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  .stat:nth-child(2)::before { animation-delay: -1s; }
+  .stat:nth-child(3)::before { animation-delay: -2s; }
+  .stat:nth-child(4)::before { animation-delay: -3s; }
+  .stat:nth-child(5)::before { animation-delay: -4s; }
+  .stat:nth-child(6)::before { animation-delay: -5s; }
+  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: .18; } 50% { transform: scale(1.2); opacity: .32; } }
+  .stat > * { position: relative; }
   .stat svg {
     width: 22px;
     height: 22px;
-    stroke: var(--gold);
+    stroke: var(--c);
     fill: none;
-    stroke-width: 1.4;
+    stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
+    filter: drop-shadow(0 0 6px var(--c));
   }
   .stat .v {
     margin-top: 8px;
@@ -220,65 +277,61 @@
     line-height: 1.1;
     font-variant-numeric: lining-nums tabular-nums;
     white-space: nowrap;
+    color: var(--ink);
   }
-  .stat .u {
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 11px;
-    color: var(--ink-soft);
-    margin-left: 2px;
-  }
-  .stat .k {
-    margin-top: 6px;
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 1px;
-  }
-  .stat.alert { border-color: color-mix(in srgb, var(--accent) 35%, var(--rule)); }
-  .stat.alert svg { stroke: var(--accent); }
-  .stat.alert .v { color: var(--accent); }
+  .stat .u { font-family: "Noto Sans KR", sans-serif; font-size: 11px; color: var(--ink-soft); margin-left: 2px; }
+  .stat .k { margin-top: 6px; font-family: "Noto Sans KR", sans-serif; font-size: 12px; color: var(--c); letter-spacing: 1px; }
+  .stat.alert { border-color: rgba(255, 143, 177, 0.45); }
+  .stat.alert .v { color: var(--rose); }
   .stats-note {
-    margin: 12px 0 0;
+    margin: 14px 0 0;
     text-align: center;
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
   }
 
-  /* ── Editorial ── */
+  /* ── 시적 문장 ── */
   .editorial {
-    margin: 40px auto 0;
-    padding: 22px 20px;
+    margin: 44px auto 0;
+    padding: 28px 24px 24px;
     max-width: 520px;
     text-align: center;
-    border-radius: 18px;
+    border-radius: 24px;
     background: var(--glass);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    font-weight: 300;
-    font-size: clamp(16px, 4.4vw, 20px);
-    line-height: 1.7;
-    transition: opacity .8s ease, transform .8s ease;
+    border: 1px solid var(--rule);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-size: clamp(17px, 4.6vw, 21px);
+    line-height: 1.8;
+    transition: opacity .9s ease, transform .9s ease, filter .9s ease;
   }
-  .editorial.fade { opacity: 0; transform: translateY(6px); }
+  .editorial::before {
+    content: "✧";
+    display: block;
+    margin-bottom: 8px;
+    color: var(--peach);
+    font-size: 14px;
+    letter-spacing: 8px;
+  }
+  .editorial.fade { opacity: 0; transform: translateY(8px); filter: blur(4px); }
   .editorial .sig {
     display: block;
-    margin-top: 8px;
+    margin-top: 10px;
     font-family: "Bodoni Moda", serif;
     font-style: italic;
     font-size: 13px;
-    color: var(--gold);
+    color: var(--lilac);
   }
 
-  /* ── Laps ── */
+  /* ── 랩 ── */
   .laps {
     list-style: none;
     margin: 0;
     padding: 0 16px;
-    border-radius: 18px;
-    background: var(--glass);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    background: var(--glass-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--rule);
   }
   .laps li {
@@ -287,7 +340,7 @@
     gap: 4px 12px;
     padding: 15px 0;
     border-bottom: 1px solid var(--rule);
-    animation: rise .5s ease;
+    animation: rise .6s ease;
   }
   .laps li:last-child { border-bottom: none; }
   .laps .idx {
@@ -295,36 +348,27 @@
     font-family: "Bodoni Moda", serif;
     font-style: italic;
     font-size: 24px;
-    color: var(--gold);
     line-height: 1;
+    background: linear-gradient(135deg, var(--peach), var(--rose));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  .laps .caption { font-size: 14px; }
+  .laps .caption { font-size: 15px; }
   .laps .lt {
     font-family: "Bodoni Moda", serif;
     font-size: 20px;
     font-variant-numeric: lining-nums tabular-nums;
     text-align: right;
   }
-  .laps .meta {
-    grid-column: 2 / 4;
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .laps li.best .lt { color: var(--gold); }
-  .laps li.worst .lt { color: var(--accent); }
-  .laps .empty {
-    display: block;
-    padding: 22px 0;
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 300;
-  }
-  @keyframes rise { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .laps .meta { grid-column: 2 / 4; font-family: "Noto Sans KR", sans-serif; font-size: 11px; color: var(--muted); }
+  .laps li.best .lt { color: var(--aqua); }
+  .laps li.worst .lt { color: var(--rose); }
+  .laps .empty { display: block; padding: 22px 0; text-align: center; color: var(--muted); font-size: 14px; }
+  @keyframes rise { from { opacity: 0; transform: translateY(-6px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
 
   footer {
-    margin-top: 48px;
+    margin-top: 52px;
     text-align: center;
     font-family: "Noto Sans KR", sans-serif;
     font-size: 10px;
@@ -337,18 +381,22 @@
     font-family: "Bodoni Moda", serif;
     font-size: 14px;
     letter-spacing: 6px;
-    color: var(--ink);
+    color: var(--peach);
     margin-bottom: 6px;
   }
 
   @media (max-width: 420px) {
     .masthead .hide-sm { display: none; }
     .stats { gap: 8px; }
-    .stat { padding: 14px 4px 12px; border-radius: 14px; }
+    .stat { padding: 14px 4px 12px; border-radius: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; }
   }
 </style>
 </head>
 <body>
+<div class="sky" aria-hidden="true"></div>
 <canvas id="globe" aria-hidden="true"></canvas>
 
 <main class="page">
@@ -411,14 +459,14 @@ const ICONS = {
   cloud:  '<svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.3 4.4 4.4 0 0 0 7 18z"/></svg>',
 };
 
-// 1초당 평균 추정치
+// 1초당 평균 추정치 · 카드마다 고유한 색
 const FACTS = [
-  { id: 'baby',   rate: 4.3,  unit: '명',    label: '아기 탄생' },
-  { id: 'heart',  rate: 1.2,  unit: '번',    label: '내 심장' },
-  { id: 'coffee', rate: 650,  unit: '잔',    label: '한국 커피' },
-  { id: 'earth',  rate: 29.8, unit: 'km',    label: '지구 이동' },
-  { id: 'tree',   rate: 0.44, unit: '축구장', label: '사라진 숲', digits: 1, alert: true },
-  { id: 'cloud',  rate: 1170, unit: '톤',    label: 'CO₂ 배출',  alert: true },
+  { id: 'baby',   rate: 4.3,  unit: '명',    label: '아기 탄생', color: '#ffcf9e' },
+  { id: 'heart',  rate: 1.2,  unit: '번',    label: '내 심장',   color: '#ff8fb1' },
+  { id: 'coffee', rate: 650,  unit: '잔',    label: '한국 커피', color: '#f5b78c' },
+  { id: 'earth',  rate: 29.8, unit: 'km',    label: '지구 이동', color: '#8ee8e2' },
+  { id: 'tree',   rate: 0.44, unit: '축구장', label: '사라진 숲', color: '#a8e6a1', digits: 1, alert: true },
+  { id: 'cloud',  rate: 1170, unit: '톤',    label: 'CO₂ 배출',  color: '#c7a6ff', alert: true },
 ];
 
 const QUIPS = [
@@ -460,7 +508,7 @@ function lapCaption(sec) {
   return '"거의 다 왔어"보다 길었어요.';
 }
 
-/* ═════════════ 숫자 포맷 (만·억 단위로 간결하게) ═════════════ */
+/* ═════════════ 숫자 포맷 (만·억 단위) ═════════════ */
 function compact(v, digits = 0) {
   const trim = s => s.replace(/\.0$/, '');
   if (v >= 1e8) return trim((v / 1e8).toFixed(1)) + '억';
@@ -480,6 +528,7 @@ $('today').textContent = today.getFullYear() + '.' + String(today.getMonth() + 1
 FACTS.forEach(f => {
   const el = document.createElement('div');
   el.className = 'stat' + (f.alert ? ' alert' : '');
+  el.style.setProperty('--c', f.color);
   el.innerHTML = ICONS[f.id] +
     '<div class="v"><span>0</span><span class="u">' + f.unit + '</span></div>' +
     '<div class="k">' + f.label + '</div>';
@@ -517,7 +566,6 @@ function render() {
     if (txt !== f.last) { f.el.textContent = txt; f.last = txt; }
   }
 
-  // 새로 태어난 아기만큼 지구본에 반짝임
   const births = Math.floor(sec * 4.3);
   while (birthsShown < births) { Globe.birth(); birthsShown++; }
   if (births < birthsShown) birthsShown = births;
@@ -535,7 +583,7 @@ function rotateEditorial() {
     edIndex = (edIndex + 1) % EDITORIALS.length;
     edEl.innerHTML = EDITORIALS[edIndex] + '<span class="sig">— Meanwhile</span>';
     edEl.classList.remove('fade');
-  }, 800);
+  }, 900);
 }
 
 function renderLaps() {
@@ -611,12 +659,15 @@ document.addEventListener('keydown', e => {
 });
 
 /* ═════════════ 지구촌 배경 애니메이션 ═════════════
-   천천히 도는 지구본 + 세계 도시 불빛 + 도시를 잇는 빛의 항로 */
+   별빛 속에 떠 있는 지구 · 무지갯빛 항로 · 꽃처럼 피어나는 탄생 */
 const Globe = (() => {
   const canvas = $('globe');
   const ctx = canvas.getContext('2d');
   const DEG = Math.PI / 180;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const HUES = [28, 345, 270, 175, 45, 310];   // 복숭아 · 장미 · 라일락 · 물빛 · 금빛 · 자홍
+  const hsl = (h, s, l, a) => `hsla(${h},${s}%,${l}%,${a})`;
+  const randHue = () => HUES[(Math.random() * HUES.length) | 0];
 
   const CITIES = [
     ['서울', 37.57, 126.98], ['도쿄', 35.68, 139.69], ['베이징', 39.9, 116.4], ['상하이', 31.23, 121.47],
@@ -629,7 +680,7 @@ const Globe = (() => {
     ['리마', -12.05, -77.04], ['시드니', -33.87, 151.21], ['오클랜드', -36.85, 174.76], ['자카르타', -6.2, 106.85],
     ['마닐라', 14.6, 120.98], ['호놀룰루', 21.3, -157.86], ['앵커리지', 61.22, -149.9], ['밴쿠버', 49.28, -123.12],
     ['리야드', 24.71, 46.68], ['테헤란', 35.69, 51.39], ['산티아고', -33.45, -70.67], ['보고타', 4.71, -74.07],
-  ].map(([name, lat, lon]) => ({ name, v: toVec(lat, lon), seoul: name === '서울' }));
+  ].map(([name, lat, lon]) => ({ name, v: toVec(lat, lon), seoul: name === '서울', hue: randHue(), ph: Math.random() * 6 }));
   const SEOUL = CITIES[0];
 
   function toVec(lat, lon) {
@@ -638,20 +689,9 @@ const Globe = (() => {
   }
 
   let W, H, R, cx, cy, dpr;
-  let lon0 = -127 * DEG;          // 서울이 정면에 오도록 시작
+  let lon0 = -127 * DEG;
   const tilt = 22 * DEG;
-  let colors = {};
-  const arcs = [], pulses = [];
-
-  function readColors() {
-    const cs = getComputedStyle(document.documentElement);
-    colors = {
-      gold: cs.getPropertyValue('--gold').trim(),
-      accent: cs.getPropertyValue('--accent').trim(),
-      ink: cs.getPropertyValue('--ink').trim(),
-      paper: cs.getPropertyValue('--paper-2').trim(),
-    };
-  }
+  const arcs = [], blooms = [], motes = [], stars = [];
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -661,9 +701,26 @@ const Globe = (() => {
     R = Math.min(W * 0.46, H * 0.44, 420);
     cx = W / 2;
     cy = Math.min(H * 0.42, 360);
+    stars.length = 0;
+    const n = Math.round(W * H / 9000);
+    for (let i = 0; i < n; i++) stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.1 + 0.2, ph: Math.random() * 6, sp: 0.5 + Math.random() * 1.5 });
+    motes.length = 0;
+    for (let i = 0; i < 38; i++) motes.push(newMote(true));
   }
 
-  // 3D → 화면 좌표. d > 0 이면 앞면
+  // 반딧불처럼 떠오르는 빛 알갱이
+  function newMote(anywhere) {
+    return {
+      x: Math.random() * W,
+      y: anywhere ? Math.random() * H : H + 10,
+      r: 1 + Math.random() * 2.4,
+      vy: 0.08 + Math.random() * 0.22,
+      sway: 0.3 + Math.random() * 0.8,
+      ph: Math.random() * 6,
+      hue: randHue(),
+    };
+  }
+
   function project(v, scale = 1) {
     const c = Math.cos(lon0), s = Math.sin(lon0);
     const x1 = v[0] * c + v[1] * s;
@@ -683,137 +740,189 @@ const Globe = (() => {
   }
 
   function spawnArc() {
-    let a = Math.random() < 0.35 ? SEOUL : CITIES[(Math.random() * CITIES.length) | 0];
-    let b = CITIES[(Math.random() * CITIES.length) | 0];
+    const a = Math.random() < 0.35 ? SEOUL : CITIES[(Math.random() * CITIES.length) | 0];
+    const b = CITIES[(Math.random() * CITIES.length) | 0];
     if (a === b) return;
-    arcs.push({ a: a.v, b: b.v, t0: performance.now(), dur: 2600 + Math.random() * 1800 });
+    arcs.push({ a: a.v, b: b.v, t0: performance.now(), dur: 2600 + Math.random() * 1800, hue: randHue() });
   }
 
   function birth() {
     const c = CITIES[(Math.random() * CITIES.length) | 0];
-    // 보이는 쪽 도시를 우선
     const pick = project(c.v).d > 0.1 ? c : CITIES.find(x => project(x.v).d > 0.2) || c;
-    pulses.push({ v: pick.v, t0: performance.now() });
-    if (pulses.length > 60) pulses.shift();
+    blooms.push({ v: pick.v, t0: performance.now(), hue: randHue(), rot: Math.random() * Math.PI });
+    if (blooms.length > 60) blooms.shift();
   }
 
-  function line(points, color, alpha, width) {
-    ctx.strokeStyle = color;
-    ctx.globalAlpha = alpha;
-    ctx.lineWidth = width;
+  function path(points) {
     ctx.beginPath();
     let pen = false;
     for (const p of points) {
       if (p.d > 0) { pen ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); pen = true; }
       else pen = false;
     }
-    ctx.stroke();
+  }
+
+  function glowDot(x, y, r, h, a) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
+    g.addColorStop(0, hsl(h, 100, 85, a));
+    g.addColorStop(0.3, hsl(h, 95, 70, a * 0.5));
+    g.addColorStop(1, hsl(h, 90, 60, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r * 4, 0, Math.PI * 2); ctx.fill();
   }
 
   function draw(now) {
     ctx.clearRect(0, 0, W, H);
-    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
 
-    // 구 본체: 은은한 광택
-    const g = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.1, cx, cy, R);
-    g.addColorStop(0, colors.paper);
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.globalAlpha = 0.9;
+    // 별
+    for (const s of stars) {
+      const a = 0.25 + 0.55 * (0.5 + 0.5 * Math.sin(now / 1000 * s.sp + s.ph));
+      ctx.fillStyle = `rgba(255,248,240,${a})`;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // 대기의 빛무리 (색이 천천히 변함)
+    const hA = (now / 120) % 360;
+    const halo = ctx.createRadialGradient(cx, cy, R * 0.9, cx, cy, R * 1.35);
+    halo.addColorStop(0, hsl(hA, 90, 75, 0.28));
+    halo.addColorStop(0.5, hsl((hA + 60) % 360, 90, 70, 0.1));
+    halo.addColorStop(1, hsl((hA + 120) % 360, 90, 70, 0));
+    ctx.fillStyle = halo;
+    ctx.beginPath(); ctx.arc(cx, cy, R * 1.35, 0, Math.PI * 2); ctx.fill();
+
+    // 구 본체: 밤바다 같은 그라데이션
+    const body = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.05, cx, cy, R);
+    body.addColorStop(0, 'rgba(120, 90, 200, 0.45)');
+    body.addColorStop(0.6, 'rgba(40, 30, 100, 0.35)');
+    body.addColorStop(1, 'rgba(20, 15, 60, 0.25)');
+    ctx.fillStyle = body;
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
 
-    // 외곽선 + 바깥 고리
-    ctx.globalAlpha = 0.35;
-    ctx.strokeStyle = colors.gold;
-    ctx.lineWidth = 1;
+    // 무지갯빛 테두리
+    ctx.lineWidth = 1.2;
+    const rim = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
+    rim.addColorStop(0, hsl(28, 100, 80, 0.7));
+    rim.addColorStop(0.35, hsl(345, 100, 78, 0.7));
+    rim.addColorStop(0.7, hsl(270, 100, 80, 0.7));
+    rim.addColorStop(1, hsl(175, 80, 75, 0.7));
+    ctx.strokeStyle = rim;
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
-    ctx.globalAlpha = 0.12;
-    ctx.setLineDash([2, 6]);
-    ctx.beginPath(); ctx.arc(cx, cy, R * 1.12, 0, Math.PI * 2); ctx.stroke();
-    ctx.setLineDash([]);
 
-    // 위선 · 경선
+    // 궤도 고리
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-0.35);
+    ctx.setLineDash([2, 7]);
+    ctx.lineDashOffset = -now / 60;
+    ctx.strokeStyle = hsl((hA + 180) % 360, 90, 80, 0.25);
+    ctx.beginPath(); ctx.ellipse(0, 0, R * 1.22, R * 0.32, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // 위선 · 경선 (부드러운 라일락빛)
+    ctx.lineWidth = 0.7;
     for (let lat = -60; lat <= 60; lat += 20) {
       const pts = [];
       for (let lon = 0; lon <= 360; lon += 5) pts.push(project(toVec(lat, lon)));
-      line(pts, colors.gold, lat === 0 ? 0.32 : 0.16, lat === 0 ? 1 : 0.7);
+      ctx.strokeStyle = lat === 0 ? 'rgba(255, 207, 158, 0.4)' : 'rgba(210, 190, 255, 0.18)';
+      path(pts); ctx.stroke();
     }
     for (let lon = 0; lon < 360; lon += 20) {
       const pts = [];
       for (let lat = -90; lat <= 90; lat += 5) pts.push(project(toVec(lat, lon)));
-      line(pts, colors.gold, 0.16, 0.7);
+      ctx.strokeStyle = 'rgba(210, 190, 255, 0.16)';
+      path(pts); ctx.stroke();
     }
 
-    // 항로
+    ctx.globalCompositeOperation = 'lighter';
+
+    // 무지갯빛 항로
     for (let i = arcs.length - 1; i >= 0; i--) {
       const A = arcs[i];
       const p = (now - A.t0) / A.dur;
       if (p > 1.4) { arcs.splice(i, 1); continue; }
       const head = Math.min(p, 1);
-      const tail = Math.max(0, p - 0.45);
+      const tail = Math.max(0, p - 0.5);
       const fade = p > 1 ? 1 - (p - 1) / 0.4 : 1;
       const pts = [];
       for (let k = 0; k <= 40; k++) {
         const t = tail + (head - tail) * (k / 40);
-        const lift = 1 + 0.12 * Math.sin(Math.PI * t);
-        pts.push(project(slerp(A.a, A.b, t), lift));
+        pts.push(project(slerp(A.a, A.b, t), 1 + 0.14 * Math.sin(Math.PI * t)));
       }
-      line(pts, colors.accent, 0.55 * fade, 1.3);
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = hsl(A.hue, 100, 75, 0.6 * fade);
+      path(pts); ctx.stroke();
       const hp = pts[pts.length - 1];
-      if (hp.d > 0 && p < 1) {
-        ctx.globalAlpha = 0.85 * fade;
-        ctx.fillStyle = colors.accent;
-        ctx.beginPath(); ctx.arc(hp.x, hp.y, 2, 0, Math.PI * 2); ctx.fill();
-      }
+      if (hp.d > 0 && p < 1) glowDot(hp.x, hp.y, 2, A.hue, 0.9 * fade);
     }
 
     // 도시 불빛
     for (const c of CITIES) {
       const p = project(c.v);
       if (p.d <= 0) continue;
-      const tw = 0.6 + 0.4 * Math.sin(now / 700 + c.v[0] * 10);
-      ctx.globalAlpha = (0.35 + 0.5 * p.d) * tw;
-      ctx.fillStyle = c.seoul ? colors.accent : colors.gold;
-      ctx.beginPath(); ctx.arc(p.x, p.y, c.seoul ? 3.2 : 2.1, 0, Math.PI * 2); ctx.fill();
+      const tw = 0.55 + 0.45 * Math.sin(now / 700 + c.ph);
       if (c.seoul) {
-        ctx.globalAlpha = 0.25 * p.d;
-        ctx.strokeStyle = colors.accent;
-        ctx.beginPath(); ctx.arc(p.x, p.y, 7 + 2 * Math.sin(now / 500), 0, Math.PI * 2); ctx.stroke();
+        glowDot(p.x, p.y, 3, 345, 0.9 * p.d);
+        ctx.strokeStyle = hsl(345, 100, 80, 0.35 * p.d);
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 9 + 3 * Math.sin(now / 500), 0, Math.PI * 2); ctx.stroke();
+      } else {
+        glowDot(p.x, p.y, 1.7, c.hue, (0.3 + 0.6 * p.d) * tw);
       }
     }
 
-    // 탄생 반짝임
-    for (let i = pulses.length - 1; i >= 0; i--) {
-      const P = pulses[i];
-      const p = (now - P.t0) / 1800;
-      if (p > 1) { pulses.splice(i, 1); continue; }
-      const pt = project(P.v);
+    // 탄생: 꽃처럼 피어나는 빛
+    for (let i = blooms.length - 1; i >= 0; i--) {
+      const B = blooms[i];
+      const p = (now - B.t0) / 2200;
+      if (p > 1) { blooms.splice(i, 1); continue; }
+      const pt = project(B.v);
       if (pt.d <= 0) continue;
-      ctx.globalAlpha = (1 - p) * 0.8;
-      ctx.strokeStyle = colors.accent;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath(); ctx.arc(pt.x, pt.y, 3 + p * 16, 0, Math.PI * 2); ctx.stroke();
+      const ease = 1 - Math.pow(1 - p, 3);
+      const a = (1 - p) * 0.85;
+      const size = 4 + ease * 14;
+      ctx.save();
+      ctx.translate(pt.x, pt.y);
+      ctx.rotate(B.rot + ease * 0.8);
+      for (let k = 0; k < 6; k++) {
+        ctx.rotate(Math.PI / 3);
+        ctx.fillStyle = hsl((B.hue + k * 12) % 360, 100, 75, a * 0.55);
+        ctx.beginPath();
+        ctx.ellipse(size * 0.55, 0, size * 0.5, size * 0.2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      glowDot(pt.x, pt.y, 1.6, B.hue, a);
     }
-    ctx.globalAlpha = 1;
+
+    // 떠오르는 빛 알갱이
+    for (let i = 0; i < motes.length; i++) {
+      const m = motes[i];
+      m.y -= m.vy * (running ? 1.8 : 1);
+      const x = m.x + Math.sin(now / 1500 + m.ph) * 18 * m.sway;
+      if (m.y < -10) { motes[i] = newMote(false); continue; }
+      glowDot(x, m.y, m.r, m.hue, 0.35 + 0.3 * Math.sin(now / 600 + m.ph));
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
   }
 
   let last = performance.now(), nextArc = 0;
   function loop(now) {
     const dt = Math.min(now - last, 100);
     last = now;
-    lon0 += dt * 0.000045 * (running ? 2.2 : 1);   // 스탑워치가 달리면 지구도 조금 더 빨리
+    lon0 += dt * 0.000045 * (running ? 2.2 : 1);
     if (now > nextArc) {
       spawnArc();
-      nextArc = now + (running ? 500 : 1100) + Math.random() * 700;
+      nextArc = now + (running ? 450 : 1000) + Math.random() * 700;
     }
     draw(now);
     requestAnimationFrame(loop);
   }
 
-  readColors();
   resize();
   addEventListener('resize', resize);
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
   if (reduceMotion) draw(performance.now());
   else requestAnimationFrame(loop);
 
